@@ -8,7 +8,7 @@ export default class Cards extends Component {
 
 	render() {
 		return (
-			<div class='card'>
+			<div id='card' class='card'>
 				<img src='https://www.mathcs.emory.edu/~cheung/Courses/170/Syllabus/10/FIGS/0/As.png' class='card-img-top' alt='As'></img>
 				<div class='card-body'>
 					<p class='card-text'>Some quick example.</p>
