@@ -19,20 +19,13 @@ export default class Login extends Component {
 		event.preventDefault();
 		const { userInput } = this.state;
 
-		// if (!userInput) {
-		// 	alert('Please enter your name!');
-		// } else {
-		// 	this.props.history.push('/gameBoard');
-		// }
-
 		const isLoginOk = await login(userInput);
 
 		if (!isLoginOk.ok) {
 			alert(isLoginOk.error);
 			this.props.history.push('/login');
 		} else {
-			// this.props.history.push('/gameBoard');
-			const gameCreated = await createGame(userInput);
+			this.props.history.push('/gameBoard');
 		}
 	};
 
