@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './gameBoard.css';
 
 export default class GameBoard extends Component {
 	constructor(props) {
@@ -7,6 +8,10 @@ export default class GameBoard extends Component {
 	}
 
 	render() {
-		return <div className='board-container'></div>;
+		return (
+			<div className='board-container'>
+				<aside>asd</aside>
+			</div>
+		);
 	}
 }
