@@ -5,3 +5,14 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
+
+.board-container {
+	display: flex;
+}
+.game-info {
+	display: flex;
+	flex: 1;
+}
+.margins {
+	margin: 20px;
+}
