@@ -23,9 +23,10 @@ export default class GameBoard extends Component {
 
 	createGame = async name => {
 		const createdGame = await createGame(name);
+		const game = JSON.parse(createdGame);
 		const { id } = JSON.parse(createdGame);
 		const gameId = id;
-		this.setState({ gameId });
+		this.setState({ gameId, game });
 		this.getPlayers(gameId);
 		this.getMonster(gameId);
 	};
@@ -52,16 +53,16 @@ export default class GameBoard extends Component {
 	};
 
 	render() {
-		const { name, player, monster } = this.state;
-		if (player && monster) {
+		const { name, player, monster, game } = this.state;
+		if (player && monster && game) {
 			return (
 				<div className='board-container'>
-					<div className='players'>
+					<div className='players margins'>
 						<Monster monster={monster}></Monster>
 						<Player name={name} player={player}></Player>
 					</div>
-					<div className='game-info'>
-						<Turns></Turns>
+					<div className='game-info margins'>
+						<Turns game={game}></Turns>
 					</div>
 				</div>
 			);
