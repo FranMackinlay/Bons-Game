@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Cards from '../cards/cards';
+
 import Monster from '../monster/monster';
 import Player from '../player-stats/player';
 import './gameBoard.css';
@@ -44,6 +44,10 @@ export default class GameBoard extends Component {
 	hydrateBoard = () => {
 		const { name } = this.state;
 		this.createGame(name);
+		const { player } = this.state;
+		if (player) {
+			this.getPLayerCards(player.id);
+		}
 	};
 
 	render() {
@@ -53,7 +57,6 @@ export default class GameBoard extends Component {
 				<div className='board-container'>
 					<Player name={name} player={player}></Player>
 					<Monster monster={monster}></Monster>
-					<Cards></Cards>
 				</div>
 			);
 		}
