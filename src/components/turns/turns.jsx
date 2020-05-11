@@ -7,6 +7,7 @@ export default class Turns extends Component {
 		this.state = {
 			currentTurn: this.props.game.currentTurn,
 			turnsLeft: this.props.game.turnsLeft,
+			cardId: this.props.card.id,
 		};
 	}
 
