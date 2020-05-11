@@ -1,8 +1,11 @@
 #card {
-	max-width: 130px;
+	min-width: 135px;
+	margin: 5px;
 }
-.card-img-top {
-	padding: 5px;
+h4,
+h5 {
+	margin: 20px;
+	text-align: center;
 }
 
 .card-body {
