@@ -130,11 +130,34 @@ const api = (API_URL = 'http://game.bons.me/api') => {
         headers: {
           'Content-type': 'application/json'
         },
-      });
+      }).then(response => {
+        const reader = response.body.getReader();
+        return new ReadableStream({
+          start(controller) {
+            return pump();
+            async function pump() {
+              const { done, value } = await reader.read();
+              if (done) {
+                controller.close();
+                return;
+              }
+              controller.enqueue(value);
+              return pump();
+            }
+          }
+        })
+      })
+        .then(stream => new Response(stream))
+        .then(response => {
+          return response.text()
+        })
+        .catch(err => console.error(err));
 
-      const playersCards = await response.json();
+      return await response;
 
-      return playersCards;
+      // const playersCards = await response.json();
+
+      // return playersCards;
     },
     createGame: async (name) => {
       const response = fetch(`${getGameEndpoint}`, {
