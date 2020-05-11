@@ -34,7 +34,6 @@ export default class Players extends Component {
 	render() {
 		const { name, hp, shield, maxHp, cards } = this.state;
 		if (cards) {
-			console.log(cards);
 			return (
 				<div className='player-cards'>
 					<div id='player' className='card mb-3'>

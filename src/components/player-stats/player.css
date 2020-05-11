@@ -1,6 +1,5 @@
 #player {
-	width: 330px;
-	margin: 0;
+	margin: 0 !important;
 }
 .user {
 	display: flex;
@@ -8,6 +7,7 @@
 	align-items: center;
 	font-size: 4rem;
 }
+
 .card-title {
 	text-align: center;
 }
