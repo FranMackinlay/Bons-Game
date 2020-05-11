@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import api from '../../services/api';
 import './login.css';
 
-const { login, createGame, getPlayerFromGame } = api();
+const { login } = api();
 
 export default class Login extends Component {
 	state = {
@@ -25,7 +25,10 @@ export default class Login extends Component {
 			alert(isLoginOk.error);
 			this.props.history.push('/login');
 		} else {
-			this.props.history.push('/gameBoard');
+			this.props.history.push({
+				pathname: '/gameBoard',
+				state: { name: userInput },
+			});
 		}
 	};
 
