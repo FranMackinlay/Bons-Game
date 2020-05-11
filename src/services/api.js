@@ -44,11 +44,30 @@ const api = (API_URL = 'http://game.bons.me/api') => {
         headers: {
           'Content-type': 'application/json'
         },
-      });
+      }).then(response => {
+        const reader = response.body.getReader();
+        return new ReadableStream({
+          start(controller) {
+            return pump();
+            async function pump() {
+              const { done, value } = await reader.read();
+              if (done) {
+                controller.close();
+                return;
+              }
+              controller.enqueue(value);
+              return pump();
+            }
+          }
+        })
+      })
+        .then(stream => new Response(stream))
+        .then(response => {
+          return response.text()
+        })
+        .catch(err => console.error(err));
 
-      const playerFromGame = await response.json();
-
-      return playerFromGame;
+      return await response;
     },
     getMonsterFromGame: async (gameId) => {
       const response = fetch(`${getGameEndpoint}/${gameId}/monster`, {
@@ -56,11 +75,30 @@ const api = (API_URL = 'http://game.bons.me/api') => {
         headers: {
           'Content-type': 'application/json'
         },
-      });
+      }).then(response => {
+        const reader = response.body.getReader();
+        return new ReadableStream({
+          start(controller) {
+            return pump();
+            async function pump() {
+              const { done, value } = await reader.read();
+              if (done) {
+                controller.close();
+                return;
+              }
+              controller.enqueue(value);
+              return pump();
+            }
+          }
+        })
+      })
+        .then(stream => new Response(stream))
+        .then(response => {
+          return response.text()
+        })
+        .catch(err => console.error(err));
 
-      const monsterFromGame = await response.json();
-
-      return monsterFromGame;
+      return await response;
     },
     getPlayerUsingId: async (playerId) => {
       const response = fetch(`${getPlayersEndpoint}/${playerId}`, {
