@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Monster from '../monster/monster';
 import Player from '../player-stats/player';
+import Turns from '../turns/turns';
 import './gameBoard.css';
 import api from '../../services/api';
 
@@ -55,8 +56,13 @@ export default class GameBoard extends Component {
 		if (player && monster) {
 			return (
 				<div className='board-container'>
-					<Player name={name} player={player}></Player>
-					<Monster monster={monster}></Monster>
+					<div className='players'>
+						<Monster monster={monster}></Monster>
+						<Player name={name} player={player}></Player>
+					</div>
+					<div className='game-info'>
+						<Turns></Turns>
+					</div>
 				</div>
 			);
 		}
