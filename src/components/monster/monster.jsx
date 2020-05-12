@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
 
 export default class Monster extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			name: this.props.monster.name,
-			hp: this.props.monster.hp,
-			maxHp: this.props.monster.maxHp,
-			shield: this.props.monster.shield,
-		};
-	}
-
 	render() {
-		const { name, hp, shield, maxHp } = this.state;
+		const { name, hp, shield, maxHp } = this.props.monster;
 		return (
 			<div id='monster' className='card mb-3'>
 				<div className='row no-gutters'>
