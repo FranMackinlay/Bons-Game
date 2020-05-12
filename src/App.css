@@ -30,6 +30,10 @@
 .card {
 	border-radius: 5px;
 }
+body {
+	height: 100vh;
+	background-size: cover;
+}
 
 @keyframes App-logo-spin {
 	from {
