@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+// import api from '../../services/api';
 import './turns.css';
+
+// const { playNextTurn } = api();
 
 export default class Turns extends Component {
 	constructor(props) {
@@ -7,17 +10,18 @@ export default class Turns extends Component {
 		this.state = {
 			currentTurn: this.props.game.currentTurn,
 			turnsLeft: this.props.game.turnsLeft,
-			cardId: this.props.card.id,
+			cardId: this.props.cardId,
 		};
 	}
 
 	onSubmit = async event => {
 		event.preventDefault();
-		console.log('submittt');
+		alert(this.state.cardId);
 	};
 
 	render() {
 		const { currentTurn, turnsLeft } = this.state;
+
 		return (
 			<form className='turns-info' onSubmit={this.onSubmit}>
 				<div className='info'>
