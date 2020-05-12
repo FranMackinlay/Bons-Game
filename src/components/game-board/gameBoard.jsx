@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 
 import Monster from '../monster/monster';
 import Player from '../player-stats/player';
-import Turns from '../turns/turns';
+// import Turns from '../turns/turns';
 import Cards from '../cards/cards';
 import './gameBoard.css';
 import api from '../../services/api';
 
-const { createGame, getPlayerFromGame, getMonsterFromGame, getPlayersCards } = api();
+const { createGame, getPlayerFromGame, getMonsterFromGame, getPlayersCards, playNextTurn } = api();
 
 export default class GameBoard extends Component {
 	constructor(props) {
@@ -15,6 +15,7 @@ export default class GameBoard extends Component {
 		this.state = {
 			name: this.props.location.state.name,
 			gameId: null,
+			cardId: null,
 		};
 	}
 
@@ -57,12 +58,49 @@ export default class GameBoard extends Component {
 	};
 
 	selectCard = cardId => {
+		console.log(cardId);
 		this.setState({ cardId });
 	};
 
+	playerAction = async (player, cardId, monster) => {
+		const playerCards = JSON.parse(await getPlayersCards(player.id));
+		const cardPlayed = playerCards.filter(card => card.id === cardId);
+		const { effect, value } = cardPlayed[0];
+		switch (effect) {
+			case 'SHIELD':
+				this.setState(prevState => ({ player: { ...prevState.player, shield: prevState.player.shield + value } }));
+				break;
+			case 'HEAL':
+				this.setState(prevState => {
+					console.log(prevState.player.hp);
+					return { player: { ...prevState.player, hp: prevState.player.hp + value } };
+				});
+				console.log(this.state.player);
+				break;
+			case 'DAMAGE':
+				this.setState(prevState => ({ monster: { ...prevState.monster, hp: prevState.monster.hp - value } }));
+				break;
+			default:
+				break;
+		}
+		console.log('newPlayerStats', this.state.player);
+	};
+
+	onSubmit = async event => {
+		event.preventDefault();
+		const { gameId, cardId, player, monster } = this.state;
+		this.playerAction(player, cardId, monster);
+		const playNext = await playNextTurn(gameId, cardId);
+		const { game, monsterEffect } = JSON.parse(playNext);
+		this.setState({ game });
+		// console.log('player', player);
+		// console.log('monster', monster);
+	};
+
 	render() {
-		const { name, player, monster, game, cards, cardId } = this.state;
+		const { name, player, monster, game, cards } = this.state;
 		if (player && monster && game && cards) {
+			const { currentTurn, turnsLeft } = game;
 			return (
 				<div className='board-container'>
 					<div className='players margins'>
@@ -79,7 +117,21 @@ export default class GameBoard extends Component {
 						</div>
 					</div>
 					<div className='game-info margins'>
-						<Turns cardId={cardId} game={game}></Turns>
+						<form className='turns-info' onSubmit={this.onSubmit}>
+							<div className='info'>
+								<div className='current-turn info-state'>
+									<h4>Current Turn:</h4>
+									<h5>{currentTurn}</h5>
+								</div>
+								<div className='turns-left info-state'>
+									<h4>Turns Left:</h4>
+									<h5>{turnsLeft}</h5>
+								</div>
+							</div>
+							<button className='submit' type='submit'>
+								End Turn
+							</button>
+						</form>
 					</div>
 				</div>
 			);
