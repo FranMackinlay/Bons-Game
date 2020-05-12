@@ -63,7 +63,7 @@ const api = (API_URL = 'http://game.bons.me/api') => {
       })
         .then(stream => new Response(stream))
         .then(response => {
-          return response.text()
+          return response.text();
         })
         .catch(err => console.error(err));
 
