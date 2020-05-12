@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import Monster from '../monster/monster';
 import Player from '../player-stats/player';
-// import Turns from '../turns/turns';
 import Cards from '../cards/cards';
 import './gameBoard.css';
 import api from '../../services/api';
@@ -83,7 +82,6 @@ export default class GameBoard extends Component {
 			default:
 				break;
 		}
-		console.log('newPlayerStats', this.state.player);
 	};
 
 	onSubmit = async event => {
