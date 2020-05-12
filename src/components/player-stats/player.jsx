@@ -2,18 +2,8 @@ import React, { Component } from 'react';
 import './player.css';
 
 export default class Players extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			name: this.props.name,
-			hp: this.props.player.hp,
-			maxHp: this.props.player.maxHp,
-			shield: this.props.player.shield,
-		};
-	}
-
 	render() {
-		const { name, hp, shield, maxHp } = this.state;
+		const { name, hp, shield, maxHp } = this.props.player;
 		return (
 			<div className='player-cards'>
 				<div id='player' className='card mb-3'>
