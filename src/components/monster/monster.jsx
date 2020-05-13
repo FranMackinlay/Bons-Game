@@ -4,7 +4,7 @@ export default class Monster extends Component {
 	render() {
 		const { name, hp, shield, maxHp } = this.props.monster;
 		return (
-			<div id='monster' className='card mb-3'>
+			<div id='monster' className='card'>
 				<div className='row no-gutters'>
 					<div className='user col-md-4'>
 						<i className='fas fa-user'></i>

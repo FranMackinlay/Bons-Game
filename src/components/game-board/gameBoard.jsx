@@ -17,6 +17,7 @@ export default class GameBoard extends Component {
 			gameId: null,
 			cardId: null,
 			show: false,
+			monsterEffect: '',
 		};
 	}
 
@@ -168,7 +169,7 @@ export default class GameBoard extends Component {
 
 		this.monsterAction(monsterEffect, player, monster);
 
-		this.setState({ game, active: null });
+		this.setState({ game, active: null, monsterEffect, monsterHasPlayed: true });
 
 		await this.getPlayerCards(player.id);
 
@@ -176,13 +177,17 @@ export default class GameBoard extends Component {
 	};
 
 	render() {
-		const { name, player, monster, game, cards, show, modalMessage, active } = this.state;
+		const { name, player, monster, game, cards, show, modalMessage, active, monsterEffect, monsterHasPlayed } = this.state;
 		if (player && monster && game && cards) {
 			const { currentTurn, turnsLeft } = game;
+
 			return (
 				<div className='board-container'>
 					<div className='players margins'>
 						<Monster monster={monster}></Monster>
+						<h6 className={monsterHasPlayed ? 'showMonsterText' : 'hideMonsterText'}>
+							Monster has played {monsterEffect.effect} with value: {monsterEffect.value}
+						</h6>
 						<Player name={name} player={player}></Player>
 						<div className='cards'>
 							{cards.slice(-3).map(({ id, effect, value }, index) => {

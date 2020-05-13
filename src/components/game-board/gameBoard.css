@@ -46,3 +46,18 @@
 .active {
 	background-color: tomato;
 }
+
+.showMonsterText {
+	visibility: visible;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.125);
+	margin: 10px 0;
+}
+.hideMonsterText {
+	visibility: hidden;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.125);
+	margin: 10px 0;
+}
