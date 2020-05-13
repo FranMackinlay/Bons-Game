@@ -77,6 +77,9 @@ export default class GameBoard extends Component {
 				console.log(this.state.player);
 				break;
 			case 'DAMAGE':
+				if (monster.shield) {
+					return this.setState(prevState => ({ monster: { ...prevState.monster, shield: prevState.monster.shield - value } }));
+				}
 				this.setState(prevState => ({ monster: { ...prevState.monster, hp: prevState.monster.hp - value } }));
 				break;
 			default:
@@ -91,6 +94,7 @@ export default class GameBoard extends Component {
 		const playNext = await playNextTurn(gameId, cardId);
 		const { game, monsterEffect } = JSON.parse(playNext);
 		this.setState({ game });
+		await this.getPlayerCards(player.id);
 		// console.log('player', player);
 		// console.log('monster', monster);
 	};
