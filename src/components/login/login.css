@@ -1,11 +1,3 @@
-body {
-	margin: 0;
-	padding: 0;
-	background-color: #edf6ed;
-	background: url('../../assets/background.jpg');
-	background-repeat: no-repeat;
-}
-
 .login {
 	text-align: center;
 	background-color: #d3d3d377;

@@ -31,6 +31,11 @@
 	border-radius: 5px;
 }
 body {
+	margin: 0;
+	padding: 0;
+	background-color: #edf6ed;
+	background: url('./assets/background.jpg');
+	background-repeat: no-repeat;
 	height: 100vh;
 	background-size: cover;
 }
