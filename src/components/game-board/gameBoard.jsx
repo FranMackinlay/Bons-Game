@@ -71,7 +71,7 @@ export default class GameBoard extends Component {
 	};
 
 	playerAction = async (player, cardId, monster) => {
-		const playerCards = JSON.parse(await getPlayersCards(player.id));
+		const playerCards = this.state.cards;
 		const cardPlayed = playerCards.filter(item => item.id === cardId);
 		if (!cardPlayed[0]) return;
 		const { effect, value } = cardPlayed[0];
