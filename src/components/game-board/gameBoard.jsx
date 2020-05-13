@@ -59,7 +59,7 @@ export default class GameBoard extends Component {
 	};
 
 	selectCard = cardId => {
-		this.setState({ cardId });
+		this.setState({ cardId, active: cardId });
 	};
 	handleClose = () => {
 		this.setState({ show: false });
@@ -143,17 +143,17 @@ export default class GameBoard extends Component {
 		const { player, monster, game } = this.state;
 
 		if (player.hp <= 0) {
-			this.setState({ message: `${monster.name} wins! You lose!` });
+			this.setState({ modalMessage: `${monster.name} wins! You lose!` });
 			this.openModal();
 		}
 
 		if (monster.hp <= 0) {
-			this.setState({ message: `Congratulations ${player.name}! You win!` });
+			this.setState({ modalMessage: `Congratulations ${player.name}! You win!` });
 			this.openModal();
 		}
 
 		if (game.turnsLeft === 0) {
-			this.setState({ message: `That's a tie, try again!` });
+			this.setState({ modalMessage: `That's a tie, try again!` });
 			this.openModal();
 		}
 	};
@@ -168,7 +168,7 @@ export default class GameBoard extends Component {
 
 		this.monsterAction(monsterEffect, player, monster);
 
-		this.setState({ game });
+		this.setState({ game, active: null });
 
 		await this.getPlayerCards(player.id);
 
@@ -176,7 +176,7 @@ export default class GameBoard extends Component {
 	};
 
 	render() {
-		const { name, player, monster, game, cards, show, message } = this.state;
+		const { name, player, monster, game, cards, show, modalMessage, active } = this.state;
 		if (player && monster && game && cards) {
 			const { currentTurn, turnsLeft } = game;
 			return (
@@ -187,7 +187,7 @@ export default class GameBoard extends Component {
 						<div className='cards'>
 							{cards.slice(-3).map(({ id, effect, value }, index) => {
 								return (
-									<div key={index} onClick={() => this.selectCard(id)} className='cards-single'>
+									<div key={index} onClick={() => this.selectCard(id)} className={`cards-single ${active === id ? 'active' : null}`}>
 										<Cards key={id} effect={effect} value={value}></Cards>
 									</div>
 								);
@@ -215,7 +215,7 @@ export default class GameBoard extends Component {
 						<Modal.Header closeButton>
 							<Modal.Title>Bons Game</Modal.Title>
 						</Modal.Header>
-						<Modal.Body>{message}</Modal.Body>
+						<Modal.Body>{modalMessage}</Modal.Body>
 						<Modal.Footer>
 							<Button variant='primary' onClick={this.handleClose}>
 								Play Again
