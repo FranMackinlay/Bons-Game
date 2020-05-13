@@ -12,3 +12,6 @@ h5 {
 	padding: 10px;
 	font-size: 10px;
 }
+.true {
+	border: solid 1px tomato;
+}

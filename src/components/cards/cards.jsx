@@ -2,16 +2,8 @@ import React, { Component } from 'react';
 import './cards.css';
 
 export default class Cards extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			effect: this.props.effect,
-			value: this.props.value,
-		};
-	}
-
 	render() {
-		const { effect, value } = this.state;
+		const { effect, value } = this.props;
 		return (
 			<div id='card' className='card'>
 				<h4>{effect}</h4>
