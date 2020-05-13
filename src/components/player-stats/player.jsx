@@ -5,8 +5,8 @@ export default class Players extends Component {
 	render() {
 		const { name, hp, shield, maxHp } = this.props.player;
 		return (
-			<div className='player-cards'>
-				<div id='player' className='card mb-3'>
+			<div className='player-cards mb-3'>
+				<div id='player' className='card'>
 					<div className='row no-gutters'>
 						<div className='user col-md-4'>
 							<i className='fas fa-user'></i>
