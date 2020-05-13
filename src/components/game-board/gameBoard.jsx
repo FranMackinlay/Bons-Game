@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 
 import Monster from '../monster/monster';
 import Player from '../player-stats/player';
@@ -15,6 +16,7 @@ export default class GameBoard extends Component {
 			name: this.props.location.state.name,
 			gameId: null,
 			cardId: null,
+			show: false,
 		};
 	}
 
@@ -59,10 +61,18 @@ export default class GameBoard extends Component {
 	selectCard = cardId => {
 		this.setState({ cardId });
 	};
+	handleClose = () => {
+		this.setState({ show: false });
+		this.hydrateBoard();
+	};
+
+	openModal = () => {
+		this.setState({ show: true });
+	};
 
 	playerAction = async (player, cardId, monster) => {
 		const playerCards = JSON.parse(await getPlayersCards(player.id));
-		const cardPlayed = playerCards.filter(card => card.id === cardId);
+		const cardPlayed = playerCards.filter(item => item.id === cardId);
 		if (!cardPlayed[0]) return;
 		const { effect, value } = cardPlayed[0];
 
@@ -100,9 +110,7 @@ export default class GameBoard extends Component {
 			case 'HEAL':
 				this.setState(prevState => {
 					if (monster.hp + value > monster.maxHp) {
-						this.setState(prevState => {
-							return { monster: { ...prevState.monster, hp: prevState.monster.maxHp } };
-						});
+						return { monster: { ...prevState.monster, hp: prevState.monster.maxHp } };
 					}
 					return { monster: { ...prevState.monster, hp: prevState.monster.hp + value } };
 				});
@@ -131,21 +139,44 @@ export default class GameBoard extends Component {
 		}
 	};
 
+	checkForWinners = () => {
+		const { player, monster, game } = this.state;
+
+		if (player.hp <= 0) {
+			this.setState({ message: `${monster.name} wins! You lose!` });
+			this.openModal();
+		}
+
+		if (monster.hp <= 0) {
+			this.setState({ message: `Congratulations ${player.name}! You win!` });
+			this.openModal();
+		}
+
+		if (game.turnsLeft === 0) {
+			this.setState({ message: `That's a tie, try again!` });
+			this.openModal();
+		}
+	};
+
 	onSubmit = async event => {
 		event.preventDefault();
 		const { gameId, cardId, player, monster } = this.state;
-		if (cardId) this.playerAction(player, cardId, monster);
 		const playNext = await playNextTurn(gameId, cardId);
 		const { game, monsterEffect } = JSON.parse(playNext);
 		console.log(monsterEffect);
+		if (cardId) this.playerAction(player, cardId, monster);
 
 		this.monsterAction(monsterEffect, player, monster);
+
 		this.setState({ game });
+
 		await this.getPlayerCards(player.id);
+
+		this.checkForWinners();
 	};
 
 	render() {
-		const { name, player, monster, game, cards } = this.state;
+		const { name, player, monster, game, cards, show, message } = this.state;
 		if (player && monster && game && cards) {
 			const { currentTurn, turnsLeft } = game;
 			return (
@@ -180,6 +211,17 @@ export default class GameBoard extends Component {
 							</button>
 						</form>
 					</div>
+					<Modal show={show} onHide={this.handleClose}>
+						<Modal.Header closeButton>
+							<Modal.Title>Bons Game</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>{message}</Modal.Body>
+						<Modal.Footer>
+							<Button variant='primary' onClick={this.handleClose}>
+								Play Again
+							</Button>
+						</Modal.Footer>
+					</Modal>
 				</div>
 			);
 		}
