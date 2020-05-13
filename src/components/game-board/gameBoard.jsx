@@ -57,27 +57,32 @@ export default class GameBoard extends Component {
 	};
 
 	selectCard = cardId => {
-		console.log(cardId);
 		this.setState({ cardId });
 	};
 
 	playerAction = async (player, cardId, monster) => {
 		const playerCards = JSON.parse(await getPlayersCards(player.id));
 		const cardPlayed = playerCards.filter(card => card.id === cardId);
+		if (!cardPlayed[0]) return;
 		const { effect, value } = cardPlayed[0];
+
 		switch (effect) {
 			case 'SHIELD':
 				this.setState(prevState => ({ player: { ...prevState.player, shield: prevState.player.shield + value } }));
 				break;
 			case 'HEAL':
 				this.setState(prevState => {
-					console.log(prevState.player.hp);
+					if (player.hp + value > player.maxHp) {
+						return { player: { ...prevState.player, hp: prevState.player.maxHp } };
+					}
 					return { player: { ...prevState.player, hp: prevState.player.hp + value } };
 				});
-				console.log(this.state.player);
 				break;
 			case 'DAMAGE':
 				if (monster.shield) {
+					if (monster.shield - value < 0) {
+						return this.setState(prevState => ({ monster: { ...prevState.monster, shield: 0, hp: prevState.monster.hp + (monster.shield - value) } }));
+					}
 					return this.setState(prevState => ({ monster: { ...prevState.monster, shield: prevState.monster.shield - value } }));
 				}
 				this.setState(prevState => ({ monster: { ...prevState.monster, hp: prevState.monster.hp - value } }));
@@ -87,16 +92,56 @@ export default class GameBoard extends Component {
 		}
 	};
 
+	monsterAction = async ({ effect, value }, player, monster) => {
+		switch (effect) {
+			case 'SHIELD':
+				this.setState(prevState => ({ monster: { ...prevState.monster, shield: prevState.monster.shield + value } }));
+				break;
+			case 'HEAL':
+				this.setState(prevState => {
+					if (monster.hp + value > monster.maxHp) {
+						this.setState(prevState => {
+							return { monster: { ...prevState.monster, hp: prevState.monster.maxHp } };
+						});
+					}
+					return { monster: { ...prevState.monster, hp: prevState.monster.hp + value } };
+				});
+				break;
+			case 'DAMAGE':
+				if (player.shield) {
+					if (player.shield - value < 0) {
+						return this.setState(prevState => ({ player: { ...prevState.player, shield: 0, hp: prevState.player.hp + (player.shield - value) } }));
+					}
+					return this.setState(prevState => ({ player: { ...prevState.player, shield: prevState.player.shield - value } }));
+				}
+				this.setState(prevState => ({ player: { ...prevState.player, hp: prevState.player.hp - value } }));
+				break;
+			case 'HORROR':
+				if (player.shield) {
+					if (player.shield - value < 0) {
+						return this.setState(prevState => ({ player: { ...prevState.player, shield: 0, hp: prevState.player.hp + (player.shield - value) } }));
+					}
+					return this.setState(prevState => ({ player: { ...prevState.player, shield: prevState.player.shield - value } }));
+				}
+				this.setState(prevState => ({ player: { ...prevState.player, hp: prevState.player.hp - value } }));
+				break;
+
+			default:
+				break;
+		}
+	};
+
 	onSubmit = async event => {
 		event.preventDefault();
 		const { gameId, cardId, player, monster } = this.state;
-		this.playerAction(player, cardId, monster);
+		if (cardId) this.playerAction(player, cardId, monster);
 		const playNext = await playNextTurn(gameId, cardId);
 		const { game, monsterEffect } = JSON.parse(playNext);
+		console.log(monsterEffect);
+
+		this.monsterAction(monsterEffect, player, monster);
 		this.setState({ game });
 		await this.getPlayerCards(player.id);
-		// console.log('player', player);
-		// console.log('monster', monster);
 	};
 
 	render() {
@@ -109,7 +154,7 @@ export default class GameBoard extends Component {
 						<Monster monster={monster}></Monster>
 						<Player name={name} player={player}></Player>
 						<div className='cards'>
-							{cards.map(({ id, effect, value }, index) => {
+							{cards.slice(-3).map(({ id, effect, value }, index) => {
 								return (
 									<div key={index} onClick={() => this.selectCard(id)} className='cards-single'>
 										<Cards key={id} effect={effect} value={value}></Cards>
