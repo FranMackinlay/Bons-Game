@@ -9,6 +9,8 @@ import api from '../../services/api';
 
 const { createGame, getPlayerFromGame, getMonsterFromGame, getPlayersCards, playNextTurn } = api();
 
+const { Header, Body, Title, Footer } = Modal;
+
 export default class GameBoard extends Component {
 	constructor(props) {
 		super(props);
@@ -28,7 +30,7 @@ export default class GameBoard extends Component {
 	createGame = async name => {
 		const createdGame = await createGame(name);
 		const game = JSON.parse(createdGame);
-		const { id } = JSON.parse(createdGame);
+		const { id } = game;
 		const gameId = id;
 		this.setState({ gameId, game });
 		this.getPlayers(gameId);
@@ -62,6 +64,7 @@ export default class GameBoard extends Component {
 	selectCard = cardId => {
 		this.setState({ cardId, active: cardId });
 	};
+
 	handleClose = () => {
 		this.setState({ show: false });
 		this.hydrateBoard();
@@ -72,68 +75,73 @@ export default class GameBoard extends Component {
 	};
 
 	playerAction = async (player, cardId, monster) => {
-		const playerCards = this.state.cards;
-		const cardPlayed = playerCards.filter(item => item.id === cardId);
+		const { cards: playerCards } = this.state;
+		const cardPlayed = playerCards.filter(card => card.id === cardId);
+
 		if (!cardPlayed[0]) return;
+
 		const { effect, value } = cardPlayed[0];
 
 		switch (effect) {
 			case 'SHIELD':
-				this.setState(prevState => ({ player: { ...prevState.player, shield: prevState.player.shield + value } }));
-				break;
+				return this.setState(prevState => ({ player: { ...prevState.player, shield: prevState.player.shield + value } }));
+
 			case 'HEAL':
 				this.setState(prevState => {
 					if (player.hp + value > player.maxHp) {
 						return { player: { ...prevState.player, hp: prevState.player.maxHp } };
 					}
+
 					return { player: { ...prevState.player, hp: prevState.player.hp + value } };
 				});
-				break;
+
+				return;
+
 			case 'DAMAGE':
 				if (monster.shield) {
 					if (monster.shield - value < 0) {
 						return this.setState(prevState => ({ monster: { ...prevState.monster, shield: 0, hp: prevState.monster.hp + (monster.shield - value) } }));
 					}
+
 					return this.setState(prevState => ({ monster: { ...prevState.monster, shield: prevState.monster.shield - value } }));
 				}
-				this.setState(prevState => ({ monster: { ...prevState.monster, hp: prevState.monster.hp - value } }));
-				break;
+
+				return this.setState(prevState => ({ monster: { ...prevState.monster, hp: prevState.monster.hp - value } }));
+
 			default:
-				break;
+				return;
 		}
 	};
 
 	monsterAction = async ({ effect, value }, player, monster) => {
 		switch (effect) {
 			case 'SHIELD':
-				this.setState(prevState => ({ monster: { ...prevState.monster, shield: prevState.monster.shield + value } }));
-				break;
+				return this.setState(prevState => ({ monster: { ...prevState.monster, shield: prevState.monster.shield + value } }));
+
 			case 'HEAL':
 				this.setState(prevState => {
 					if (monster.hp + value > monster.maxHp) {
 						return { monster: { ...prevState.monster, hp: prevState.monster.maxHp } };
 					}
+
 					return { monster: { ...prevState.monster, hp: prevState.monster.hp + value } };
 				});
-				break;
+
+				return;
+
 			case 'DAMAGE':
 				if (player.shield) {
 					if (player.shield - value < 0) {
 						return this.setState(prevState => ({ player: { ...prevState.player, shield: 0, hp: prevState.player.hp + (player.shield - value) } }));
 					}
+
 					return this.setState(prevState => ({ player: { ...prevState.player, shield: prevState.player.shield - value } }));
 				}
-				this.setState(prevState => ({ player: { ...prevState.player, hp: prevState.player.hp - value } }));
-				break;
+
+				return this.setState(prevState => ({ player: { ...prevState.player, hp: prevState.player.hp - value } }));
+
 			case 'HORROR':
-				if (player.shield) {
-					if (player.shield - value < 0) {
-						return this.setState(prevState => ({ player: { ...prevState.player, shield: 0, hp: prevState.player.hp + (player.shield - value) } }));
-					}
-					return this.setState(prevState => ({ player: { ...prevState.player, shield: prevState.player.shield - value } }));
-				}
-				this.setState(prevState => ({ player: { ...prevState.player, hp: prevState.player.hp - value } }));
-				break;
+				return this.setState(prevState => ({ player: { ...prevState.player, hp: prevState.player.hp - value } }));
 
 			default:
 				break;
@@ -164,7 +172,7 @@ export default class GameBoard extends Component {
 		const { gameId, cardId, player, monster } = this.state;
 		const playNext = await playNextTurn(gameId, cardId);
 		const { game, monsterEffect } = JSON.parse(playNext);
-		console.log(monsterEffect);
+
 		if (cardId) this.playerAction(player, cardId, monster);
 
 		this.monsterAction(monsterEffect, player, monster);
@@ -178,6 +186,7 @@ export default class GameBoard extends Component {
 
 	render() {
 		const { name, player, monster, game, cards, show, modalMessage, active, monsterEffect, monsterHasPlayed } = this.state;
+
 		if (player && monster && game && cards) {
 			const { currentTurn, turnsLeft } = game;
 
@@ -217,15 +226,15 @@ export default class GameBoard extends Component {
 						</form>
 					</div>
 					<Modal show={show} onHide={this.handleClose}>
-						<Modal.Header closeButton>
-							<Modal.Title>Bons Game</Modal.Title>
-						</Modal.Header>
-						<Modal.Body>{modalMessage}</Modal.Body>
-						<Modal.Footer>
+						<Header closeButton>
+							<Title>Bons Game</Title>
+						</Header>
+						<Body>{modalMessage}</Body>
+						<Footer>
 							<Button variant='primary' onClick={this.handleClose}>
 								Play Again
 							</Button>
-						</Modal.Footer>
+						</Footer>
 					</Modal>
 				</div>
 			);
