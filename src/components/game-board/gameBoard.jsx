@@ -191,51 +191,56 @@ export default class GameBoard extends Component {
 			const { currentTurn, turnsLeft } = game;
 
 			return (
-				<div className='board-container'>
-					<div className='players margins'>
-						<Monster monster={monster}></Monster>
-						<h6 className={monsterHasPlayed ? 'showMonsterText' : 'hideMonsterText'}>
-							Monster has played {monsterEffect.effect} with value: {monsterEffect.value}
-						</h6>
-						<Player name={name} player={player}></Player>
-						<div className='cards'>
-							{cards.slice(-3).map(({ id, effect, value }, index) => {
-								return (
-									<div key={index} onClick={() => this.selectCard(id)} className={`cards-single ${active === id ? 'active' : null}`}>
-										<Cards key={id} effect={effect} value={value}></Cards>
-									</div>
-								);
-							})}
-						</div>
-					</div>
-					<div className='game-info margins'>
-						<form className='turns-info' onSubmit={this.onSubmit}>
-							<div className='info'>
-								<div className='current-turn info-state'>
-									<h4>Current Turn:</h4>
-									<h5>{currentTurn}</h5>
-								</div>
-								<div className='turns-left info-state'>
-									<h4>Turns Left:</h4>
-									<h5>{turnsLeft}</h5>
-								</div>
+				<div className='header'>
+					<h1>Bons Game!</h1>
+					<h5>Try to beat Cthulhu by selecting a card and clicking on End Turn!</h5>
+
+					<div className='board-container'>
+						<div className='players margins'>
+							<Monster monster={monster}></Monster>
+							<h6 className={monsterHasPlayed ? 'showMonsterText' : 'hideMonsterText'}>
+								Monster has played {monsterEffect.effect} with value: {monsterEffect.value}
+							</h6>
+							<Player name={name} player={player}></Player>
+							<div className='cards'>
+								{cards.slice(-3).map(({ id, effect, value }, index) => {
+									return (
+										<div key={index} onClick={() => this.selectCard(id)} className={`cards-single ${active === id ? 'active' : null}`}>
+											<Cards key={id} effect={effect} value={value}></Cards>
+										</div>
+									);
+								})}
 							</div>
-							<button className='submit' type='submit'>
-								End Turn
-							</button>
-						</form>
+						</div>
+						<div className='game-info margins'>
+							<form className='turns-info' onSubmit={this.onSubmit}>
+								<div className='info'>
+									<div className='current-turn info-state'>
+										<h4>Current Turn:</h4>
+										<h5>{currentTurn}</h5>
+									</div>
+									<div className='turns-left info-state'>
+										<h4>Turns Left:</h4>
+										<h5>{turnsLeft}</h5>
+									</div>
+								</div>
+								<button className='submit' type='submit'>
+									End Turn
+								</button>
+							</form>
+						</div>
+						<Modal show={show} onHide={this.handleClose}>
+							<Header closeButton>
+								<Title>Bons Game</Title>
+							</Header>
+							<Body>{modalMessage}</Body>
+							<Footer>
+								<Button variant='primary' onClick={this.handleClose}>
+									Play Again
+								</Button>
+							</Footer>
+						</Modal>
 					</div>
-					<Modal show={show} onHide={this.handleClose}>
-						<Header closeButton>
-							<Title>Bons Game</Title>
-						</Header>
-						<Body>{modalMessage}</Body>
-						<Footer>
-							<Button variant='primary' onClick={this.handleClose}>
-								Play Again
-							</Button>
-						</Footer>
-					</Modal>
 				</div>
 			);
 		}
