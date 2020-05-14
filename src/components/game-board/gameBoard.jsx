@@ -199,7 +199,7 @@ export default class GameBoard extends Component {
 						<div className='players margins'>
 							<Monster monster={monster}></Monster>
 							<h6 className={monsterHasPlayed ? 'showMonsterText' : 'hideMonsterText'}>
-								Monster has played {monsterEffect.effect} with value: {monsterEffect.value}
+								{monster.name} has played {monsterEffect.effect} with value: {monsterEffect.value}
 							</h6>
 							<Player name={name} player={player}></Player>
 							<div className='cards'>
