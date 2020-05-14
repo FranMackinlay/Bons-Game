@@ -1,7 +1,6 @@
 const api = (API_URL = 'http://game.bons.me/api') => {
   const getGameEndpoint = `${API_URL}/games`;
   const getPlayersEndpoint = `${API_URL}/players`;
-  const getMonstersEndpoint = `${API_URL}/monsters`;
   return {
     login: async (name) => {
       try {
@@ -16,23 +15,6 @@ const api = (API_URL = 'http://game.bons.me/api') => {
         const login = await response;
 
         return login;
-
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    getGame: async (gameId) => {
-      try {
-        const response = fetch(`${getGameEndpoint}/${gameId}`, {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json'
-          },
-        });
-
-        const game = await response.json();
-
-        return game;
 
       } catch (error) {
         console.error(error);
@@ -100,30 +82,6 @@ const api = (API_URL = 'http://game.bons.me/api') => {
 
       return await response;
     },
-    getPlayerUsingId: async (playerId) => {
-      const response = fetch(`${getPlayersEndpoint}/${playerId}`, {
-        method: 'GET',
-        headers: {
-          'Content-type': 'application/json'
-        },
-      });
-
-      const playerUsingId = await response.json();
-
-      return playerUsingId;
-    },
-    getMonsterUsingId: async (monsterId) => {
-      const response = fetch(`${getMonstersEndpoint}/${monsterId}`, {
-        method: 'GET',
-        headers: {
-          'Content-type': 'application/json'
-        },
-      });
-
-      const monsterUsingId = await response.json();
-
-      return monsterUsingId;
-    },
     getPlayersCards: async (playerId) => {
       const response = fetch(`${getPlayersEndpoint}/${playerId}/cards`, {
         method: 'GET',
@@ -154,10 +112,6 @@ const api = (API_URL = 'http://game.bons.me/api') => {
         .catch(err => console.error(err));
 
       return await response;
-
-      // const playersCards = await response.json();
-
-      // return playersCards;
     },
     createGame: async (name) => {
       const response = fetch(`${getGameEndpoint}`, {
@@ -225,10 +179,6 @@ const api = (API_URL = 'http://game.bons.me/api') => {
         .catch(err => console.error(err));
 
       return await response;
-
-      // const playNextTurn = await response.json();
-
-      // return playNextTurn;
     }
   }
 }
